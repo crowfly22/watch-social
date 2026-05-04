@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WATCH - See Everything</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Cpath d='M50 20 C30 20 10 35 10 50 C10 65 30 80 50 80 C70 80 90 65 90 50 C90 35 70 20 50 20 Z M50 70 C35 70 25 60 25 50 C25 40 35 30 50 30 C65 30 75 40 75 50 C75 60 65 70 50 70 Z' fill='%23e94560'/%3E%3Ccircle cx='50' cy='50' r='12' fill='%23e94560'/%3E%3C/svg%3E">
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar">
+        <div class="nav-brand">
+            <svg class="logo" viewBox="0 0 100 100">
+                <path d="M50 20 C30 20 10 35 10 50 C10 65 30 80 50 80 C70 80 90 65 90 50 C90 35 70 20 50 20 Z M50 70 C35 70 25 60 25 50 C25 40 35 30 50 30 C65 30 75 40 75 50 C75 60 65 70 50 70 Z" fill="currentColor"/>
+                <circle cx="50" cy="50" r="12" fill="currentColor"/>
+            </svg>
+            <span class="brand-text">WATCH</span>
+        </div>
+        <div class="nav-links">
+            <a href="#" class="active" onclick="showPage('home')">🏠</a>
+            <a href="#" onclick="showPage('explore')">🔍</a>
+            <a href="#" onclick="showPage('create')">➕</a>
+            <a href="#" onclick="showPage('notifications')">🔔</a>
+            <a href="#" onclick="showPage('profile')">👤</a>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <main class="main-content">
+        <!-- Home Feed -->
+        <div id="home-page" class="page active">
+            <div class="stories">
+                <div class="story add-story" onclick="showPage('create')">
+                    <div class="story-avatar">+</div>
+                    <span>Add Story</span>
+                </div>
+                <!-- Stories will be loaded dynamically -->
+            </div>
+            <div class="feed" id="feed">
+                <!-- Posts will be loaded dynamically -->
+            </div>
+        </div>
+
+        <!-- Explore Page -->
+        <div id="explore-page" class="page">
+            <div class="search-bar">
+                <input type="text" id="search-input" placeholder="Search users, posts...">
+                <button onclick="search()">🔍</button>
+            </div>
+            <div class="explore-grid" id="explore-grid">
+                <!-- Explore content -->
+            </div>
+        </div>
+
+        <!-- Create Post -->
+        <div id="create-page" class="page">
+            <div class="create-post">
+                <h2>Create Post</h2>
+                <textarea id="post-content" placeholder="What's happening?"></textarea>
+                <div class="post-actions">
+                    <label for="post-image" class="btn-secondary">📷 Photo</label>
+                    <input type="file" id="post-image" accept="image/*" hidden>
+                    <button class="btn-primary" onclick="createPost()">Post</button>
+                </div>
+                <div id="image-preview"></div>
+            </div>
+        </div>
+
+        <!-- Notifications -->
+        <div id="notifications-page" class="page">
+            <h2>Notifications</h2>
+            <div class="notifications-list" id="notifications">
+                <div class="notification">
+                    <span class="notification-text">Welcome to WATCH! 👁️</span>
+                    <span class="notification-time">Now</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Profile -->
+        <div id="profile-page" class="page">
+            <div class="profile-header">
+                <div class="profile-avatar">👤</div>
+                <div class="profile-info">
+                    <h2 id="profile-username">Guest</h2>
+                    <p id="profile-bio">Join WATCH to share your moments</p>
+                    <div class="profile-stats">
+                        <div><strong id="post-count">0</strong> posts</div>
+                        <div><strong id="followers-count">0</strong> followers</div>
+                        <div><strong id="following-count">0</strong> following</div>
+                    </div>
+                </div>
+            </div>
+            <div class="profile-posts" id="profile-posts"></div>
+        </div>
+    </main>
+
+    <!-- Auth Modal -->
+    <div id="auth-modal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeAuth()">&times;</span>
+            <div class="auth-logo">
+                <svg class="logo-large" viewBox="0 0 100 100">
+                    <path d="M50 20 C30 20 10 35 10 50 C10 65 30 80 50 80 C70 80 90 65 90 50 C90 35 70 20 50 20 Z M50 70 C35 70 25 60 25 50 C25 40 35 30 50 30 C65 30 75 40 75 50 C75 60 65 70 50 70 Z" fill="#e94560"/>
+                    <circle cx="50" cy="50" r="12" fill="#e94560"/>
+                </svg>
+                <h1>WATCH</h1>
+                <p>See Everything</p>
+            </div>
+            <div class="auth-tabs">
+                <button class="tab-btn active" onclick="showTab('login')">Login</button>
+                <button class="tab-btn" onclick="showTab('register')">Register</button>
+            </div>
+            <div id="login-tab" class="tab-content active">
+                <input type="text" id="login-username" placeholder="Username">
+                <input type="password" id="login-password" placeholder="Password">
+                <button class="btn-primary" onclick="login()">Login</button>
+            </div>
+            <div id="register-tab" class="tab-content">
+                <input type="text" id="reg-username" placeholder="Username">
+                <input type="email" id="reg-email" placeholder="Email">
+                <input type="password" id="reg-password" placeholder="Password">
+                <button class="btn-primary" onclick="register()">Register</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="js/app.js"></script>
+</body>
+</html>
