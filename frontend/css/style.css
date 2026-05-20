@@ -334,6 +334,24 @@ h1 {
     to { rotate: 360deg; }
 }
 
+@media (prefers-reduced-motion: reduce) {
+    html {
+        scroll-behavior: auto;
+    }
+
+    *,
+    *::before,
+    *::after {
+        animation-duration: 0.001ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.001ms !important;
+    }
+
+    .orbit-ring span {
+        animation: none !important;
+    }
+}
+
 .mission-grid,
 .ideas {
     display: grid;

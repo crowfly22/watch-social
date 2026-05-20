@@ -175,6 +175,7 @@ function setText(id, value) {
 function initMatrix() {
     const canvas = document.getElementById('matrix-canvas');
     const ctx = canvas.getContext('2d');
+    const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
     const glyphs = 'AI<>/{}[]01TOKENORBITMIMO創造者百万亿';
     let columns = [];
     let width = 0;
@@ -204,7 +205,16 @@ function initMatrix() {
     }
 
     resize();
-    draw();
+    if (prefersReducedMotion) {
+        ctx.fillStyle = 'rgba(246, 247, 251, 0.16)';
+        ctx.font = `${15 * window.devicePixelRatio}px ui-monospace, monospace`;
+        columns.forEach((y, index) => {
+            const text = glyphs[(index + Math.floor(y)) % glyphs.length];
+            ctx.fillText(text, index * 28 * window.devicePixelRatio, y);
+        });
+    } else {
+        draw();
+    }
     window.addEventListener('resize', resize);
 }
 
