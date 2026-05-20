@@ -2,6 +2,7 @@ from flask import Flask, request, jsonify, send_from_directory
 from flask_cors import CORS
 from werkzeug.security import generate_password_hash, check_password_hash
 from werkzeug.utils import secure_filename
+from functools import wraps
 import jwt
 import datetime
 import os
@@ -65,6 +66,7 @@ def init_db():
 
 # Auth middleware
 def token_required(f):
+    @wraps(f)
     def decorated(*args, **kwargs):
         token = request.headers.get('Authorization')
         if not token:

@@ -1,70 +1,58 @@
-# 👁️ WATCH - Social Media Platform
+# Orbit 100T - Creator Token Lab
 
-**WATCH** - Platform social media untuk berbagi momen, foto, dan cerita dengan semua orang.
+Orbit 100T adalah proyek landing page interaktif yang terinspirasi dari halaman campaign token AI seperti `100t.xiaomimimo.com`, tetapi dibuat sebagai konsep kreatif independen untuk GitHub demo project.
 
-![Logo](frontend/images/logo.svg)
+> Catatan: proyek ini bukan situs resmi Xiaomi/MiMo, tidak memakai API Xiaomi, dan hanya memakai data simulasi.
 
-## 🚀 Features
+## Ide Utama
 
-- ✅ **User Authentication** (Register/Login)
-- ✅ **Create Posts** (Text + Image)
-- ✅ **Like & Comment System**
-- ✅ **Follow/Unfollow Users**
-- ✅ **Stories** (24h auto-expire)
-- ✅ **Explore Page** (Discover content)
-- ✅ **Profile Pages**
-- ✅ **Notifications**
-- ✅ **Responsive Design**
+Alih-alih membuat tiruan statis, proyek ini mengubah konsep giveaway token menjadi **mission control untuk kreator AI**:
 
-## 🛠️ Tech Stack
+- **Countdown real-time** sampai campaign selesai.
+- **Live token vault** dengan angka token simulasi yang bergerak dinamis.
+- **Creator scoring lab** untuk menghitung peluang/tier reward berdasarkan tipe kreator, tool AI, dan bukti karya.
+- **Generated pitch** yang bisa dipakai untuk README, form grant, atau proposal komunitas.
+- **Visual cyber-orbit** dengan matrix canvas background dan kartu glassmorphism.
 
-- **Backend:** Flask (Python)
-- **Database:** SQLite
-- **Frontend:** HTML5, CSS3, Vanilla JS
-- **Auth:** JWT Tokens
-- **Storage:** Local file system
+## Tech Stack
 
-## 📦 Installation
+- Frontend: HTML, CSS, Vanilla JavaScript
+- Backend lokal: Flask untuk serve static files
+- Tidak perlu build tool atau database untuk demo landing page
+
+## Menjalankan Lokal
 
 ```bash
-# Clone repo
-git clone https://github.com/crowfly22/watch-social.git
-cd watch-social
-
-# Install dependencies
 pip install -r requirements.txt
-
-# Run backend
 cd backend
 python app.py
+```
 
-# Open browser
+Buka browser ke:
+
+```text
 http://localhost:5000
 ```
 
-## 🎯 API Endpoints
+## Struktur Project
 
-| Method | Endpoint | Description |
-|--------|----------|-------------|
-| POST | /api/auth/register | Register new user |
-| POST | /api/auth/login | Login user |
-| GET | /api/posts | Get all posts |
-| POST | /api/posts | Create new post |
-| POST | /api/posts/:id/like | Like/unlike post |
-| GET | /api/users/:username | Get user profile |
-| POST | /api/users/:id/follow | Follow/unfollow user |
+```text
+frontend/
+  index.html      # Landing page dan interactive lab
+  css/style.css   # Cyber-orbit responsive UI
+  js/app.js       # Countdown, token vault, scorer, matrix canvas
+backend/
+  app.py          # Flask static server + API lama repo
+requirements.txt
+```
 
-## 🎨 Logo
+## Pengembangan Lanjutan
 
-Logo WATCH adalah **mata** yang melambangkan:
-- 👁️ **Visibilitas** - Melihat semua konten
-- 👁️ **Awareness** - Sadar akan sekitar
-- 👁️ **Connection** - Terhubung dengan semua orang
+- Hubungkan form ke database untuk menyimpan submission kreator.
+- Tambahkan login GitHub dan verifikasi repository publik.
+- Buat leaderboard kreator berdasarkan score dan bukti demo.
+- Deploy frontend ke GitHub Pages atau backend Flask ke Render/Fly.io.
 
-## 📝 License
+## License
 
-MIT License - Open source untuk semua!
-
----
-
-**Dibuat dengan ❤️ oleh WATCH Team**
+MIT
