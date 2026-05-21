@@ -3,128 +3,181 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>WATCH - See Everything</title>
+    <title>Orbit 100T - Creator Token Lab</title>
+    <meta name="description" content="Landing page interaktif terinspirasi campaign token AI: countdown, token vault, creator scorer, dan project generator.">
     <link rel="stylesheet" href="css/style.css">
-    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Cpath d='M50 20 C30 20 10 35 10 50 C10 65 30 80 50 80 C70 80 90 65 90 50 C90 35 70 20 50 20 Z M50 70 C35 70 25 60 25 50 C25 40 35 30 50 30 C65 30 75 40 75 50 C75 60 65 70 50 70 Z' fill='%23e94560'/%3E%3Ccircle cx='50' cy='50' r='12' fill='%23e94560'/%3E%3C/svg%3E">
 </head>
 <body>
-    <!-- Navigation -->
-    <nav class="navbar">
-        <div class="nav-brand">
-            <svg class="logo" viewBox="0 0 100 100">
-                <path d="M50 20 C30 20 10 35 10 50 C10 65 30 80 50 80 C70 80 90 65 90 50 C90 35 70 20 50 20 Z M50 70 C35 70 25 60 25 50 C25 40 35 30 50 30 C65 30 75 40 75 50 C75 60 65 70 50 70 Z" fill="currentColor"/>
-                <circle cx="50" cy="50" r="12" fill="currentColor"/>
-            </svg>
-            <span class="brand-text">WATCH</span>
-        </div>
-        <div class="nav-links">
-            <a href="#" class="active" onclick="showPage('home')">🏠</a>
-            <a href="#" onclick="showPage('explore')">🔍</a>
-            <a href="#" onclick="showPage('create')">➕</a>
-            <a href="#" onclick="showPage('notifications')">🔔</a>
-            <a href="#" onclick="showPage('profile')">👤</a>
-        </div>
-    </nav>
+    <div class="noise" aria-hidden="true"></div>
+    <canvas id="matrix-canvas" aria-hidden="true"></canvas>
 
-    <!-- Main Content -->
-    <main class="main-content">
-        <!-- Home Feed -->
-        <div id="home-page" class="page active">
-            <div class="stories">
-                <div class="story add-story" onclick="showPage('create')">
-                    <div class="story-avatar">+</div>
-                    <span>Add Story</span>
-                </div>
-                <!-- Stories will be loaded dynamically -->
-            </div>
-            <div class="feed" id="feed">
-                <!-- Posts will be loaded dynamically -->
-            </div>
-        </div>
+    <header class="site-header">
+        <a class="brand" href="#hero" aria-label="Orbit 100T Home">
+            <span class="brand-mark">◐</span>
+            <span>Orbit 100T</span>
+        </a>
+        <nav class="nav-links" aria-label="Navigasi utama">
+            <a href="#mission">Misi</a>
+            <a href="#lab">AI Lab</a>
+            <a href="#faq">FAQ</a>
+        </nav>
+        <button class="ghost-button" id="language-toggle" type="button">ID</button>
+    </header>
 
-        <!-- Explore Page -->
-        <div id="explore-page" class="page">
-            <div class="search-bar">
-                <input type="text" id="search-input" placeholder="Search users, posts...">
-                <button onclick="search()">🔍</button>
-            </div>
-            <div class="explore-grid" id="explore-grid">
-                <!-- Explore content -->
-            </div>
-        </div>
+    <main>
+        <section class="hero" id="hero">
+            <p class="eyebrow">Creator incentive concept • bukan situs resmi Xiaomi</p>
+            <h1>Bangun kampanye token AI yang terasa seperti misi luar angkasa.</h1>
+            <p class="hero-copy">Orbit 100T adalah template GitHub siap jalan yang mengubah halaman giveaway token menjadi pengalaman interaktif: countdown real-time, token vault hidup, scoring kreator, dan generator proposal proyek AI.</p>
 
-        <!-- Create Post -->
-        <div id="create-page" class="page">
-            <div class="create-post">
-                <h2>Create Post</h2>
-                <textarea id="post-content" placeholder="What's happening?"></textarea>
-                <div class="post-actions">
-                    <label for="post-image" class="btn-secondary">📷 Photo</label>
-                    <input type="file" id="post-image" accept="image/*" hidden>
-                    <button class="btn-primary" onclick="createPost()">Post</button>
-                </div>
-                <div id="image-preview"></div>
+            <div class="hero-actions">
+                <a class="primary-button" href="#lab">Coba AI Lab <span>→</span></a>
+                <button class="secondary-button" id="copy-link" type="button">Salin pitch</button>
             </div>
-        </div>
 
-        <!-- Notifications -->
-        <div id="notifications-page" class="page">
-            <h2>Notifications</h2>
-            <div class="notifications-list" id="notifications">
-                <div class="notification">
-                    <span class="notification-text">Welcome to WATCH! 👁️</span>
-                    <span class="notification-time">Now</span>
+            <div class="countdown-card" aria-label="Countdown kampanye">
+                <span class="card-label">Orbit closes in</span>
+                <div class="countdown" id="countdown">
+                    <span><strong id="days">00</strong>hari</span>
+                    <span><strong id="hours">00</strong>jam</span>
+                    <span><strong id="minutes">00</strong>menit</span>
+                    <span><strong id="seconds">00</strong>detik</span>
                 </div>
             </div>
-        </div>
+        </section>
 
-        <!-- Profile -->
-        <div id="profile-page" class="page">
-            <div class="profile-header">
-                <div class="profile-avatar">👤</div>
-                <div class="profile-info">
-                    <h2 id="profile-username">Guest</h2>
-                    <p id="profile-bio">Join WATCH to share your moments</p>
-                    <div class="profile-stats">
-                        <div><strong id="post-count">0</strong> posts</div>
-                        <div><strong id="followers-count">0</strong> followers</div>
-                        <div><strong id="following-count">0</strong> following</div>
+        <section class="token-panel" aria-label="Token vault">
+            <div>
+                <p class="eyebrow">Sisa token simulasi</p>
+                <div class="token-number" id="token-count">100,000,000,000,000</div>
+                <p class="muted">Vault bergerak secara halus untuk memberi kesan campaign live tanpa perlu backend.</p>
+            </div>
+            <div class="orbit-ring" aria-hidden="true">
+                <span></span>
+                <span></span>
+                <span></span>
+            </div>
+        </section>
+
+        <section class="mission-grid" id="mission">
+            <article class="mission-card">
+                <span class="step">01</span>
+                <h2>Daftar sebagai kreator</h2>
+                <p>Pilih tipe kreator, tool AI, bukti karya, dan rencana penggunaan token.</p>
+            </article>
+            <article class="mission-card featured">
+                <span class="step">02</span>
+                <h2>Dapatkan orbit score</h2>
+                <p>Skor otomatis membantu menampilkan tier reward dan saran agar proposal terlihat lebih kuat.</p>
+            </article>
+            <article class="mission-card">
+                <span class="step">03</span>
+                <h2>Generate pitch</h2>
+                <p>Hasilkan ringkasan proyek AI yang bisa dipakai di README, form campaign, atau posting komunitas.</p>
+            </article>
+        </section>
+
+        <section class="lab" id="lab">
+            <div class="section-heading">
+                <p class="eyebrow">Interactive Creator Lab</p>
+                <h2>Simulasikan peluang reward berdasarkan kualitas proyek.</h2>
+                <p>Isi form singkat. Aplikasi akan menghitung tier, estimasi token, dan membuat pitch proyek AI dalam Bahasa Indonesia.</p>
+            </div>
+
+            <div class="lab-layout">
+                <form class="creator-form" id="creator-form">
+                    <label>
+                        Nama proyek
+                        <input id="project-name" type="text" value="Nusantara Agent Studio" maxlength="60" required>
+                    </label>
+                    <label>
+                        Tipe kreator
+                        <select id="creator-type">
+                            <option value="developer">Developer / builder</option>
+                            <option value="researcher">Researcher / educator</option>
+                            <option value="startup">Startup / team</option>
+                            <option value="community">Community organizer</option>
+                        </select>
+                    </label>
+                    <label>
+                        Tool utama
+                        <select id="tool-choice">
+                            <option value="coding">Claude Code, Cursor, atau OpenClaw</option>
+                            <option value="multimodal">Multimodal content workflow</option>
+                            <option value="voice">Voice agent / TTS pipeline</option>
+                            <option value="api">Custom API integration</option>
+                        </select>
+                    </label>
+                    <label>
+                        Bukti karya
+                        <select id="proof-level">
+                            <option value="idea">Masih ide</option>
+                            <option value="prototype">Prototype berjalan</option>
+                            <option value="users">Sudah punya pengguna</option>
+                            <option value="revenue">Sudah dipakai bisnis/klien</option>
+                        </select>
+                    </label>
+                    <label>
+                        Fokus proyek
+                        <textarea id="project-focus" rows="4" maxlength="180">Membuat workspace agent untuk UMKM Indonesia yang bisa riset pasar, menulis konten, dan membuat laporan penjualan otomatis.</textarea>
+                    </label>
+                    <button class="primary-button full" type="submit">Hitung orbit score</button>
+                </form>
+
+                <aside class="result-card" aria-live="polite">
+                    <p class="eyebrow">Reward simulator</p>
+                    <div class="score"><span id="score-value">82</span><small>/100</small></div>
+                    <div class="tier" id="tier-value">Creator Pro</div>
+                    <div class="meter"><span id="score-meter"></span></div>
+                    <dl class="reward-list">
+                        <div><dt>Estimasi token</dt><dd id="token-estimate">2.4T</dd></div>
+                        <div><dt>Prioritas</dt><dd id="priority-value">Tinggi</dd></div>
+                        <div><dt>Saran</dt><dd id="advice-value">Tambahkan demo publik dan metrik pengguna.</dd></div>
+                    </dl>
+                    <div class="pitch-box">
+                        <span>Generated pitch</span>
+                        <p id="pitch-output"></p>
                     </div>
-                </div>
+                </aside>
             </div>
-            <div class="profile-posts" id="profile-posts"></div>
-        </div>
+        </section>
+
+        <section class="ideas" aria-label="Ide fitur GitHub">
+            <div class="idea-card">
+                <h3>Live token vault</h3>
+                <p>Angka token berkurang dinamis seperti campaign sungguhan, tetapi tetap aman sebagai simulasi front-end.</p>
+            </div>
+            <div class="idea-card">
+                <h3>Creator scoring</h3>
+                <p>Form ringan yang memberi reward tier berdasarkan bukti karya, tool, dan tipe pengguna.</p>
+            </div>
+            <div class="idea-card">
+                <h3>README-ready pitch</h3>
+                <p>Output langsung bisa dipakai untuk mengisi form grant, halaman landing, atau repository GitHub.</p>
+            </div>
+        </section>
+
+        <section class="faq" id="faq">
+            <h2>FAQ</h2>
+            <details open>
+                <summary>Apakah ini mengambil data dari xiaomimimo.com?</summary>
+                <p>Tidak. Ini proyek kreatif terinspirasi visual dan mekanik campaign token, bukan kloning resmi dan tidak memakai API pihak ketiga.</p>
+            </details>
+            <details>
+                <summary>Bisa dipakai di GitHub Pages?</summary>
+                <p>Bisa. Frontend murni HTML, CSS, dan JavaScript. Backend Flask tetap tersedia untuk menjalankan repo lama secara lokal.</p>
+            </details>
+            <details>
+                <summary>Apa ide pengembangannya?</summary>
+                <p>Tambahkan login GitHub, simpan submission ke database, dan tampilkan leaderboard kreator dengan bukti demo publik.</p>
+            </details>
+        </section>
     </main>
 
-    <!-- Auth Modal -->
-    <div id="auth-modal" class="modal">
-        <div class="modal-content">
-            <span class="close" onclick="closeAuth()">&times;</span>
-            <div class="auth-logo">
-                <svg class="logo-large" viewBox="0 0 100 100">
-                    <path d="M50 20 C30 20 10 35 10 50 C10 65 30 80 50 80 C70 80 90 65 90 50 C90 35 70 20 50 20 Z M50 70 C35 70 25 60 25 50 C25 40 35 30 50 30 C65 30 75 40 75 50 C75 60 65 70 50 70 Z" fill="#e94560"/>
-                    <circle cx="50" cy="50" r="12" fill="#e94560"/>
-                </svg>
-                <h1>WATCH</h1>
-                <p>See Everything</p>
-            </div>
-            <div class="auth-tabs">
-                <button class="tab-btn active" onclick="showTab('login')">Login</button>
-                <button class="tab-btn" onclick="showTab('register')">Register</button>
-            </div>
-            <div id="login-tab" class="tab-content active">
-                <input type="text" id="login-username" placeholder="Username">
-                <input type="password" id="login-password" placeholder="Password">
-                <button class="btn-primary" onclick="login()">Login</button>
-            </div>
-            <div id="register-tab" class="tab-content">
-                <input type="text" id="reg-username" placeholder="Username">
-                <input type="email" id="reg-email" placeholder="Email">
-                <input type="password" id="reg-password" placeholder="Password">
-                <button class="btn-primary" onclick="register()">Register</button>
-            </div>
-        </div>
-    </div>
+    <footer>
+        <span>Orbit 100T Creator Token Lab</span>
+        <span>Built for GitHub demo projects.</span>
+    </footer>
 
     <script src="js/app.js"></script>
 </body>

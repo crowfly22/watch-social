@@ -1,231 +1,234 @@
-// WATCH Social Media App
-const API_URL = 'http://localhost:5000/api';
-let currentUser = null;
-let authToken = localStorage.getItem('token');
+const campaignEnd = new Date('2026-05-27T16:00:00Z').getTime();
+const tokenStart = 100_000_000_000_000;
+const tokenBurnPerSecond = 18_420_000;
 
-// Initialize
-window.onload = () => {
-    if (!authToken) {
-        showAuth();
-    } else {
-        loadFeed();
+const copy = {
+    id: {
+        pitch: 'Orbit 100T adalah landing page interaktif untuk campaign token AI: countdown, token vault, creator scoring, dan generator pitch dalam satu proyek GitHub ringan.',
+        copied: 'Pitch disalin',
+        lang: 'ID'
+    },
+    en: {
+        pitch: 'Orbit 100T is an interactive AI token campaign landing page: countdown, live token vault, creator scoring, and pitch generation in one lightweight GitHub project.',
+        copied: 'Pitch copied',
+        lang: 'EN'
     }
 };
 
-// Navigation
-function showPage(page) {
-    document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
-    document.getElementById(page + '-page').classList.add('active');
-    
-    document.querySelectorAll('.nav-links a').forEach(a => a.classList.remove('active'));
-    event.target.classList.add('active');
-    
-    if (page === 'home') loadFeed();
-    if (page === 'profile') loadProfile();
-}
+let activeLanguage = 'id';
 
-// Auth
-function showAuth() {
-    document.getElementById('auth-modal').classList.add('active');
-}
-
-function closeAuth() {
-    document.getElementById('auth-modal').classList.remove('active');
-}
-
-function showTab(tab) {
-    document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
-    document.querySelectorAll('.tab-btn').forEach(t => t.classList.remove('active'));
-    document.getElementById(tab + '-tab').classList.add('active');
-    event.target.classList.add('active');
-}
-
-async function register() {
-    const username = document.getElementById('reg-username').value;
-    const email = document.getElementById('reg-email').value;
-    const password = document.getElementById('reg-password').value;
-    
-    try {
-        const res = await fetch(`${API_URL}/auth/register`, {
-            method: 'POST',
-            headers: {'Content-Type': 'application/json'},
-            body: JSON.stringify({username, email, password})
-        });
-        const data = await res.json();
-        
-        if (res.ok) {
-            alert('Registration successful! Please login.');
-            showTab('login');
-        } else {
-            alert(data.message);
-        }
-    } catch (err) {
-        alert('Error: ' + err.message);
+const weights = {
+    creatorType: {
+        developer: 20,
+        researcher: 18,
+        startup: 23,
+        community: 17
+    },
+    toolChoice: {
+        coding: 23,
+        multimodal: 20,
+        voice: 18,
+        api: 24
+    },
+    proofLevel: {
+        idea: 12,
+        prototype: 25,
+        users: 34,
+        revenue: 39
     }
+};
+
+const labels = {
+    creatorType: {
+        developer: 'developer yang membangun produk',
+        researcher: 'researcher/educator',
+        startup: 'tim startup',
+        community: 'penggerak komunitas'
+    },
+    toolChoice: {
+        coding: 'coding agent seperti Claude Code, Cursor, atau OpenClaw',
+        multimodal: 'workflow multimodal',
+        voice: 'voice agent dan TTS pipeline',
+        api: 'integrasi API kustom'
+    },
+    proofLevel: {
+        idea: 'masih berada di tahap ide',
+        prototype: 'sudah memiliki prototype berjalan',
+        users: 'sudah punya pengguna aktif',
+        revenue: 'sudah dipakai bisnis atau klien'
+    }
+};
+
+const formatNumber = new Intl.NumberFormat('en-US');
+
+function updateCountdown() {
+    const remaining = Math.max(campaignEnd - Date.now(), 0);
+    const seconds = Math.floor(remaining / 1000);
+    const days = Math.floor(seconds / 86400);
+    const hours = Math.floor((seconds % 86400) / 3600);
+    const minutes = Math.floor((seconds % 3600) / 60);
+    const secs = seconds % 60;
+
+    setText('days', pad(days));
+    setText('hours', pad(hours));
+    setText('minutes', pad(minutes));
+    setText('seconds', pad(secs));
 }
 
-async function login() {
-    const username = document.getElementById('login-username').value;
-    const password = document.getElementById('login-password').value;
-    
-    try {
-        const res = await fetch(`${API_URL}/auth/login`, {
-            method: 'POST',
-            headers: {'Content-Type': 'application/json'},
-            body: JSON.stringify({username, password})
-        });
-        const data = await res.json();
-        
-        if (res.ok) {
-            authToken = data.token;
-            currentUser = data.user;
-            localStorage.setItem('token', authToken);
-            closeAuth();
-            loadFeed();
-            updateUI();
-        } else {
-            alert(data.message);
-        }
-    } catch (err) {
-        alert('Error: ' + err.message);
-    }
+function updateTokenVault() {
+    const elapsedSeconds = Math.floor((Date.now() - new Date('2026-04-27T16:00:00Z').getTime()) / 1000);
+    const naturalBurn = Math.max(elapsedSeconds, 0) * tokenBurnPerSecond;
+    const pulseBurn = Math.floor(Math.sin(Date.now() / 1500) * 1_200_000_000);
+    const current = Math.max(tokenStart - naturalBurn - pulseBurn, 8_000_000_000_000);
+    setText('token-count', formatNumber.format(current));
 }
 
-// Feed
-async function loadFeed() {
-    try {
-        const res = await fetch(`${API_URL}/posts`);
-        const posts = await res.json();
-        
-        const feed = document.getElementById('feed');
-        feed.innerHTML = posts.map(post => `
-            <div class="post">
-                <div class="post-header">
-                    <div class="post-avatar">👤</div>
-                    <div>
-                        <div class="post-user">${post.user.username}</div>
-                        <div class="post-time">${formatTime(post.created_at)}</div>
-                    </div>
-                </div>
-                <div class="post-content">${post.content}</div>
-                ${post.image ? `<img src="${API_URL}/uploads/${post.image}" class="post-image">` : ''}
-                <div class="post-actions-bar">
-                    <button onclick="likePost(${post.id})">❤️ ${post.likes}</button>
-                    <button>💬 ${post.comments}</button>
-                    <button>🔄 Share</button>
-                </div>
-                <div class="post-likes">${post.likes} likes</div>
-            </div>
-        `).join('');
-    } catch (err) {
-        console.error('Error loading feed:', err);
-    }
+function calculateScore(event) {
+    event?.preventDefault();
+
+    const projectName = document.getElementById('project-name').value.trim() || 'AI Creator Project';
+    const creatorType = document.getElementById('creator-type').value;
+    const toolChoice = document.getElementById('tool-choice').value;
+    const proofLevel = document.getElementById('proof-level').value;
+    const projectFocus = document.getElementById('project-focus').value.trim();
+    const detailBonus = Math.min(Math.floor(projectFocus.length / 18), 10);
+    const score = Math.min(
+        weights.creatorType[creatorType] + weights.toolChoice[toolChoice] + weights.proofLevel[proofLevel] + detailBonus,
+        100
+    );
+
+    const tier = getTier(score);
+    setText('score-value', score);
+    setText('tier-value', tier.name);
+    setText('token-estimate', tier.tokens);
+    setText('priority-value', tier.priority);
+    setText('advice-value', tier.advice);
+    document.getElementById('score-meter').style.width = `${score}%`;
+    setText('pitch-output', buildPitch(projectName, creatorType, toolChoice, proofLevel, projectFocus, tier.name));
 }
 
-// Create Post
-async function createPost() {
-    const content = document.getElementById('post-content').value;
-    const imageInput = document.getElementById('post-image');
-    
-    if (!content && !imageInput.files[0]) {
-        alert('Please add content or image');
-        return;
-    }
-    
-    const formData = new FormData();
-    formData.append('content', content);
-    if (imageInput.files[0]) {
-        formData.append('image', imageInput.files[0]);
-    }
-    
-    try {
-        const res = await fetch(`${API_URL}/posts`, {
-            method: 'POST',
-            headers: {'Authorization': `Bearer ${authToken}`},
-            body: formData
-        });
-        
-        if (res.ok) {
-            document.getElementById('post-content').value = '';
-            imageInput.value = '';
-            document.getElementById('image-preview').innerHTML = '';
-            showPage('home');
-            loadFeed();
-        }
-    } catch (err) {
-        alert('Error creating post: ' + err.message);
-    }
-}
-
-// Like Post
-async function likePost(postId) {
-    if (!authToken) {
-        showAuth();
-        return;
-    }
-    
-    try {
-        await fetch(`${API_URL}/posts/${postId}/like`, {
-            method: 'POST',
-            headers: {'Authorization': `Bearer ${authToken}`}
-        });
-        loadFeed();
-    } catch (err) {
-        console.error('Error liking post:', err);
-    }
-}
-
-// Profile
-async function loadProfile() {
-    if (!currentUser) return;
-    
-    document.getElementById('profile-username').textContent = currentUser.username;
-    // Load user's posts
-}
-
-// UI Updates
-function updateUI() {
-    if (currentUser) {
-        // Update profile info
-    }
-}
-
-// Helpers
-function formatTime(timestamp) {
-    const date = new Date(timestamp);
-    return date.toLocaleDateString('id-ID', {
-        day: 'numeric',
-        month: 'short',
-        hour: '2-digit',
-        minute: '2-digit'
-    });
-}
-
-// Image preview
-document.getElementById('post-image')?.addEventListener('change', function(e) {
-    const file = e.target.files[0];
-    if (file) {
-        const reader = new FileReader();
-        reader.onload = function(e) {
-            document.getElementById('image-preview').innerHTML = `
-                <img src="${e.target.result}" style="max-width: 200px; border-radius: 10px; margin-top: 10px;">
-            `;
+function getTier(score) {
+    if (score >= 88) {
+        return {
+            name: 'Orbit Elite',
+            tokens: '5.0T+',
+            priority: 'Sangat tinggi',
+            advice: 'Siapkan demo publik, repo GitHub, dan metrik dampak agar proposal sulit diabaikan.'
         };
-        reader.readAsDataURL(file);
     }
+
+    if (score >= 72) {
+        return {
+            name: 'Creator Pro',
+            tokens: '2.4T',
+            priority: 'Tinggi',
+            advice: 'Tambahkan demo publik dan metrik pengguna.'
+        };
+    }
+
+    if (score >= 55) {
+        return {
+            name: 'Builder Pass',
+            tokens: '800B',
+            priority: 'Menengah',
+            advice: 'Ubah ide menjadi prototype singkat dan sertakan screenshot atau video.'
+        };
+    }
+
+    return {
+        name: 'Launch Pad',
+        tokens: '100B',
+        priority: 'Rendah',
+        advice: 'Perjelas masalah, target pengguna, dan rencana eksperimen 7 hari.'
+    };
+}
+
+function buildPitch(projectName, creatorType, toolChoice, proofLevel, projectFocus, tierName) {
+    const focus = projectFocus || 'membuat workflow AI yang hemat waktu dan mudah direplikasi';
+    return `${projectName} adalah proyek ${labels.creatorType[creatorType]} yang memakai ${labels.toolChoice[toolChoice]} untuk ${focus} Proyek ini ${labels.proofLevel[proofLevel]}, sehingga cocok masuk tier ${tierName} dalam simulasi Orbit 100T.`;
+}
+
+function copyPitch() {
+    navigator.clipboard?.writeText(copy[activeLanguage].pitch);
+    const button = document.getElementById('copy-link');
+    const original = button.textContent;
+    button.textContent = copy[activeLanguage].copied;
+    setTimeout(() => {
+        button.textContent = original;
+    }, 1400);
+}
+
+function toggleLanguage() {
+    activeLanguage = activeLanguage === 'id' ? 'en' : 'id';
+    document.getElementById('language-toggle').textContent = copy[activeLanguage].lang;
+}
+
+function pad(value) {
+    return String(value).padStart(2, '0');
+}
+
+function setText(id, value) {
+    const element = document.getElementById(id);
+    if (element) element.textContent = value;
+}
+
+function initMatrix() {
+    const canvas = document.getElementById('matrix-canvas');
+    const ctx = canvas.getContext('2d');
+    const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    const glyphs = 'AI<>/{}[]01TOKENORBITMIMO創造者百万亿';
+    let columns = [];
+    let width = 0;
+    let height = 0;
+
+    function resize() {
+        width = canvas.width = window.innerWidth * window.devicePixelRatio;
+        height = canvas.height = window.innerHeight * window.devicePixelRatio;
+        const count = Math.floor(width / 28);
+        columns = Array.from({ length: count }, () => Math.random() * height);
+    }
+
+    function draw() {
+        ctx.fillStyle = 'rgba(3, 4, 6, 0.16)';
+        ctx.fillRect(0, 0, width, height);
+        ctx.fillStyle = 'rgba(246, 247, 251, 0.55)';
+        ctx.font = `${15 * window.devicePixelRatio}px ui-monospace, monospace`;
+
+        columns.forEach((y, index) => {
+            const text = glyphs[Math.floor(Math.random() * glyphs.length)];
+            const x = index * 28 * window.devicePixelRatio;
+            ctx.fillText(text, x, y);
+            columns[index] = y > height + Math.random() * 6000 ? 0 : y + 18 * window.devicePixelRatio;
+        });
+
+        requestAnimationFrame(draw);
+    }
+
+    resize();
+    if (prefersReducedMotion) {
+        ctx.fillStyle = 'rgba(246, 247, 251, 0.16)';
+        ctx.font = `${15 * window.devicePixelRatio}px ui-monospace, monospace`;
+        columns.forEach((y, index) => {
+            const text = glyphs[(index + Math.floor(y)) % glyphs.length];
+            ctx.fillText(text, index * 28 * window.devicePixelRatio, y);
+        });
+    } else {
+        draw();
+    }
+    window.addEventListener('resize', resize);
+}
+
+document.getElementById('creator-form').addEventListener('submit', calculateScore);
+document.querySelectorAll('#creator-form input, #creator-form select, #creator-form textarea').forEach((field) => {
+    field.addEventListener('input', calculateScore);
 });
+document.getElementById('copy-link').addEventListener('click', copyPitch);
+document.getElementById('language-toggle').addEventListener('click', toggleLanguage);
 
-// Search
-function search() {
-    const query = document.getElementById('search-input').value;
-    // Implement search functionality
-    alert('Search: ' + query);
-}
+updateCountdown();
+updateTokenVault();
+calculateScore();
+initMatrix();
 
-// Logout
-function logout() {
-    localStorage.removeItem('token');
-    authToken = null;
-    currentUser = null;
-    showAuth();
-}
+setInterval(updateCountdown, 1000);
+setInterval(updateTokenVault, 1200);
